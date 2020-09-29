@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+{% include 'accounts/header.html' %}
+<body>
+    {% include 'accounts/navbar.html' %}
+    <div class="container-fluid">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+    {% include 'accounts/footer.html' %}
+    {% include 'accounts/scripts.html' %}
+</body>
+</html>
