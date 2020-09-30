@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-#<a class="btn btn-primary btn-sm btn-block"  href="{% url 'create_order' %}">Create Order</a>
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('products/', views.products, name='products'),

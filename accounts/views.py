@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.forms import inlineformset_factory  # multiple order
 from .models import *
 from .forms import OrderForm
 # Create your views here.
@@ -43,16 +44,20 @@ def customer(request, pk):
 
 
 def createOrder(request, pk):
+    OrderFormSet = inlineformset_factory(
+        Customer, Order, fields=('product', 'status'), extra=7)  # multiple order
     customer = Customer.objects.get(id=pk)
-    form = OrderForm(initial={'customer': customer})
+    formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)  # multiple order #queryset use kora hoise jeno previous order gula show na kore
+    # form = OrderForm(initial={'customer': customer}) #single order er jonno
     context = {
-        'form': form
+        'formset': formset
     }
     if request.method == 'POST':
         # print("print:",request.POST)
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            form.save()
+        #form = OrderForm(request.POST)
+        formset = OrderFormSet(request.POST, instance=customer)
+        if formset.is_valid():
+            formset.save()
             return redirect('/')
     return render(request, 'accounts/order_form.html', context)
 
