@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
+from .forms import OrderForm
 # Create your views here.
 
 
@@ -29,13 +30,32 @@ def products(request):
     return render(request, 'accounts/products.html', context)
 
 
-def customer(request,pk):
-    customer=Customer.objects.get(id=pk)
-    orders= customer.order_set.all()
+def customer(request, pk):
+    customer = Customer.objects.get(id=pk)
+    orders = customer.order_set.all()
     total_orders = orders.count()
-    context= {
-        'customer':customer,
-        'orders':orders,
-        'total_orders':total_orders
+    context = {
+        'customer': customer,
+        'orders': orders,
+        'total_orders': total_orders
     }
-    return render(request, 'accounts/customer.html',context)
+    return render(request, 'accounts/customer.html', context)
+
+
+def createOrder(request):
+    form = OrderForm()
+    context = {
+        'form': form
+    }
+    if request.method== 'POST':
+        #print("print:",request.POST)
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    return render(request, 'accounts/order_form.html', context)
+
+def updateOrder(request):
+    form = OrderForm()
+    context={}
+    return render(request, 'accounts/order_form.html',context)
