@@ -33,8 +33,13 @@
           <a class="dropdown-item" href="https://getbootstrap.com/docs/4.5/getting-started/introduction/" target="_blank">Bootstrap CSS</a>
           <a class="dropdown-item" href="https://docs.djangoproject.com/en/3.1/topics/http/urls/#example" target="_blank">Django URLs</a>
           <a class="dropdown-item" href="https://django-filter.readthedocs.io/en/stable/guide/install.html" target="_blank">Django Filter</a>
+          <a class="dropdown-item" href="https://jsfiddle.net/ivanov11/hzf0jxLg/" target="_blank">Registration Form Template</a>
+          <a class="dropdown-item" href="https://jsfiddle.net/ivanov11/dghm5cu7/" target="_blank">Login Form Template</a>
+          <a class="dropdown-item" href="https://docs.djangoproject.com/en/3.1/ref/contrib/messages/#adding-a-message" target="_blank">Django Errors Messages</a>
         </div>
       </li>
     </ul>
   </div>
+    <span style="color: whitesmoke">Hello, {{ user.username }}</span> {{ request.user }}
+    <span><a href="{% url 'logout' %}">Logout</a></span>
 </nav>
