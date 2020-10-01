@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.forms import inlineformset_factory  # multiple order
 from .models import *
 from .forms import OrderForm
+from .filters import OrderFilter
 # Create your views here.
 
 
@@ -35,10 +36,15 @@ def customer(request, pk):
     customer = Customer.objects.get(id=pk)
     orders = customer.order_set.all()
     total_orders = orders.count()
+
+    myFilter = OrderFilter(request.GET, queryset=orders)
+    orders= myFilter.qs
+
     context = {
         'customer': customer,
         'orders': orders,
-        'total_orders': total_orders
+        'total_orders': total_orders,
+        'myFilter': myFilter
     }
     return render(request, 'accounts/customer.html', context)
 
@@ -47,7 +53,8 @@ def createOrder(request, pk):
     OrderFormSet = inlineformset_factory(
         Customer, Order, fields=('product', 'status'), extra=7)  # multiple order
     customer = Customer.objects.get(id=pk)
-    formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)  # multiple order #queryset use kora hoise jeno previous order gula show na kore
+    # multiple order #queryset use kora hoise jeno previous order gula show na kore
+    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
     # form = OrderForm(initial={'customer': customer}) #single order er jonno
     context = {
         'formset': formset
