@@ -36,7 +36,7 @@ def admin_only(view_func):
             return view_func(request, *args, **kwargs)
 
         if group == 'customer':
-            return redirect('profile-page')
+            return redirect('profile')
         else:
             return redirect('logout') # this part is not mandatory. this will secure more if someone insert a user without registration they will be logout automatic
             

@@ -141,6 +141,6 @@ STATICFILES_DIRS = [
 ]
 # check this before deploying the site for static file https://docs.djangoproject.com/en/3.1/howto/static-files/deployment/
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR/"media"
+MEDIA_ROOT = BASE_DIR/"static/images"
 
 LOGIN_REDIRECT_URL = '/'

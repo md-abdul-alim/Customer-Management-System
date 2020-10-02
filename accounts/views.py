@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 
 from .models import *
-from .forms import OrderForm, CreateUserForm
+from .forms import OrderForm, CreateUserForm, CustomerForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 # Create your views here.
@@ -20,10 +20,10 @@ def registerPage(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            user=form.save()
+            user = form.save()
             username = form.cleaned_data.get('username')
 
-            group= Group.objects.get(name='customer')
+            group = Group.objects.get(name='customer')
             user.groups.add(group)
 
             Customer.objects.create(
@@ -69,25 +69,43 @@ def logoutPage(request):
     logout(request)
     return redirect('login')
 
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['customer'])
 def profilePage(request):
-    orders= request.user.customer.order_set.all()
+    orders = request.user.customer.order_set.all()
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
     #print("orders", orders)
     context = {
-        'orders':orders,
-        'total_orders':total_orders,
-        'delivered':delivered,
-        'pending':pending
+        'orders': orders,
+        'total_orders': total_orders,
+        'delivered': delivered,
+        'pending': pending
     }
     return render(request, 'accounts/profile.html', context)
 
 
 @login_required(login_url='login')
-#@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['customer'])
+def profileSettings(request):
+    customer = request.user.customer
+    form = CustomerForm(instance=customer)
+
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, request.FILES , instance=customer)
+        if form.is_valid():
+            form.save()
+            
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/profile_settings.html', context)
+
+
+@login_required(login_url='login')
+# @allowed_users(allowed_roles=['admin'])
 @admin_only
 def index(request):
     orders = Order.objects.all()
