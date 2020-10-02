@@ -1,5 +1,6 @@
 <br>
 <div class="row">
+    {% if request.user.is_staff %}
     <div class="col">
         <div class="col-md">
             <div class="card text-center text-white mb-3" id="total-pending">
@@ -12,6 +13,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <div class="col">
         <div class="col-md">
             <div class="card text-center text-white mb-3" id="total-orders">
