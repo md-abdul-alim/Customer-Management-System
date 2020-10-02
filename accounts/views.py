@@ -3,20 +3,29 @@ from django.forms import inlineformset_factory  # multiple order
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+
 from .models import *
 from .forms import OrderForm, CreateUserForm
 from .filters import OrderFilter
+from .decorators import unauthenticated_user, allowed_users, admin_only
 # Create your views here.
 
 
+@unauthenticated_user
 def registerPage(request):
     form = CreateUserForm()
 
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
+            user=form.save()
             username = form.cleaned_data.get('username')
+
+            group= Group.objects.get(name='customer')
+            user.groups.add(group)
+
             messages.success(request, 'Account was created for ' + username)
             return redirect('login')
 
@@ -26,17 +35,17 @@ def registerPage(request):
     return render(request, 'accounts/register.html', context)
 
 
+@unauthenticated_user
 def loginPage(request):
-    
     if request.method == 'POST':
-        
+
         username = request.POST.get('username')
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request,user)
+            login(request, user)
             return redirect('index')
             # if user.email == "abdul_alim@zohomail.com":
             #     #print(user.username)
@@ -48,13 +57,23 @@ def loginPage(request):
         else:
             messages.info(request, 'Username or password is incorrect')
             return render(request, 'accounts/login.html')
-    
+
     return render(request, 'accounts/login.html')
+
 
 def logoutPage(request):
     logout(request)
     return redirect('login')
 
+
+def profilePage(request):
+    context = {}
+    return render(request, 'accounts/profile.html', context)
+
+
+@login_required(login_url='login')
+#@allowed_users(allowed_roles=['admin'])
+@admin_only
 def index(request):
     orders = Order.objects.all()
     customers = Customer.objects.all()
@@ -73,6 +92,8 @@ def index(request):
     return render(request, 'accounts/dashboard.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def products(request):
     products = Product.objects.all()
     context = {
@@ -81,6 +102,8 @@ def products(request):
     return render(request, 'accounts/products.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def customer(request, pk):
     customer = Customer.objects.get(id=pk)
     orders = customer.order_set.all()
@@ -98,6 +121,8 @@ def customer(request, pk):
     return render(request, 'accounts/customer.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def createOrder(request, pk):
     OrderFormSet = inlineformset_factory(
         Customer, Order, fields=('product', 'status'), extra=7)  # multiple order
@@ -118,6 +143,8 @@ def createOrder(request, pk):
     return render(request, 'accounts/order_form.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk):
     order = Order.objects.get(id=pk)
     form = OrderForm(instance=order)
@@ -133,6 +160,8 @@ def updateOrder(request, pk):
     return render(request, 'accounts/order_form.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def deleteOrder(request, pk):
 
     order = Order.objects.get(id=pk)
