@@ -42,6 +42,13 @@ INSTALLED_APPS = [
 
     'accounts',
     'django_filters',
+
+    # added for password reset
+    # 'django.contrib.sites',
+
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +151,19 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/"static/images"
 
 LOGIN_REDIRECT_URL = '/'
+
+
+# email configuration for password reset
+
+# https://docs.djangoproject.com/en/3.1/topics/email/#smtp-backend
+# https://blog.mailtrap.io/django-send-email/
+# go to https://myaccount.google.com/lesssecureapps and turn on
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ursula.friedman.01@gmail.com'
+EMAIL_HOST_PASSWORD = '51Monirul@thaminA95'
+
+# for allauth
+SITE_ID = 1
