@@ -108,6 +108,7 @@ DATABASES = {
 }
 '''
 
+#local machin hosting
 # pip install psycopg2
 DATABASES = {
     'default': {
@@ -120,6 +121,17 @@ DATABASES = {
     }
 }
 
+# pip install psycopg2
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'demo_1',
+#         'USER': 'dennisivy',
+#         'PASSWORD': '1qa2ws3ed',
+#         'HOST': 'database-1.cf2pcfix1xna.us-west-2.rds.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
